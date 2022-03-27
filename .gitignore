@@ -1,0 +1,31 @@
+# Boilerplate
+__pycache__/
+_archive/
+_dev/
+.idea/
+build/
+dev/
+dist/
+ignored/
+*~$*
+*.DS_Store
+*.egg-info
+*.swp
+tags
+MANIFEST
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Custom
+/*.json
+output/
+!output/.keep
+cache/*
+!cache/.keep
+!cache/robot/
+cache/robot/*
+!cache/robot/.keep
+notebooks/cache/
+/env/*
+!/env/.env.example
