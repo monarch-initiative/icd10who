@@ -77,5 +77,5 @@ cp env/.env.example env/.env
 
 ## CI
 
-- **build.yml** — runs on PR touching source files; requires `CLIENT_ID` and `CLIENT_SECRET` as GitHub secrets; restores `tmp/cache/` for API traversal; runs `uv sync`, `make dependencies`, `make build-release`.
+- **build.yml** — runs on PR touching source files; requires `CLIENT_ID` and `CLIENT_SECRET` as GitHub secrets; restores `tmp/cache/` for API traversal; runs `uv sync`, `make build-release`.
 - **release.yml** — `workflow_dispatch` (and optional schedule/push per workflow file); creates dated release tag and uploads artefacts.

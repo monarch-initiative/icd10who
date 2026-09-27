@@ -33,8 +33,8 @@ Each release publishes preprocessing outputs for [mondo-ingest](https://github.c
 ## Build
 
 ```bash
-make dependencies   # linkml + semsql + sssom (CI uses odkfull)
-make build-release  # all release assets above
+uv sync            # Python deps from pyproject.toml
+make build-release  # all release assets above (CI uses odkfull)
 ```
 
 ## mondo-ingest consumption (target)
