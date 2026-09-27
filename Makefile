@@ -14,6 +14,8 @@ ROBOT       ?= robot
 ROBOT_PLUGINS_DIRECTORY ?= /home/$(USER)/.robot/plugins
 PYTHON      ?= python3
 UV          ?= uv
+# --no-sync: recipes use the env from `uv sync` / `make dependencies`.
+# sssom and semsql must go through UV_RUN. Bare names hit the ODK image on PATH.
 UV_RUN      ?= uv run --no-sync
 CONFIG_DIR  := config
 METADATA_DIR := metadata
@@ -152,7 +154,7 @@ $(SEMSQL_OWL): $(OUTPUT_OWL_LINKML) | $(TMP_DIR)
 
 $(DB_RELEASE): $(SEMSQL_OWL) $(CONFIG_DIR)/prefixes.csv | release-dirs
 	@rm -f $(TMP_DIR)/icd10who-semsql.db .template.db .template.db.tmp $(TMP_DIR)/icd10who-semsql-relation-graph.tsv.gz
-	RUST_BACKTRACE=full semsql make $(TMP_DIR)/icd10who-semsql.db -P $(CONFIG_DIR)/prefixes.csv
+	RUST_BACKTRACE=full $(UV_RUN) semsql make $(TMP_DIR)/icd10who-semsql.db -P $(CONFIG_DIR)/prefixes.csv
 	@rm -f .template.db .template.db.tmp $(TMP_DIR)/icd10who-semsql-relation-graph.tsv.gz
 	@test -f $(TMP_DIR)/icd10who-semsql.db || (echo "Error: $(TMP_DIR)/icd10who-semsql.db not found" && exit 1)
 	mv $(TMP_DIR)/icd10who-semsql.db $(DB_RELEASE)
@@ -177,9 +179,9 @@ $(COMPONENT_JSON): $(OUTPUT_OWL_LINKML) | $(TMP_DIR)
 	@echo "Built $@"
 
 $(SSSOM_TSV): $(COMPONENT_JSON) $(CONFIG_DIR)/mondo.sssom.config.yml | release-dirs
-	sssom parse $(COMPONENT_JSON) -I obographs-json \
+	$(UV_RUN) sssom parse $(COMPONENT_JSON) -I obographs-json \
 		--prefix-map-mode metadata_only -m $(CONFIG_DIR)/mondo.sssom.config.yml -o $@
-	sssom sort $@ -o $@
+	$(UV_RUN) sssom sort $@ -o $@
 	@echo "Built $@"
 
 # ── Metrics and docs ────────────────────────────────────────────────────────────
