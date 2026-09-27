@@ -139,10 +139,15 @@ $(YAML_OUT) $(FUNCTIONAL_OWL): $(OUTPUT_OWL) | release-dirs
 		--schema $(SCHEMA) -o $(FUNCTIONAL_OWL) $(YAML_OUT)
 	@echo "Built $(YAML_OUT) and $(FUNCTIONAL_OWL)"
 
-# RDF/XML for mondo-ingest / semsql (linkml-owl emits functional syntax)
-$(OUTPUT_OWL_LINKML): $(FUNCTIONAL_OWL)
+# RDF/XML for mondo-ingest / semsql (linkml-owl emits functional syntax).
+# Declare synonym-type properties after the LinkML dump. Without the
+# declaration, robot filter drops the hasSynonymType annotations.
+$(OUTPUT_OWL_LINKML): $(FUNCTIONAL_OWL) $(SPARQL_DIR)/declare_synonym_types.ru
 	$(ROBOT) convert -i $(FUNCTIONAL_OWL) -o $(TMP_DIR)/icd10who.rdfxml.owl
-	mv $(TMP_DIR)/icd10who.rdfxml.owl $@
+	$(ROBOT) query -i $(TMP_DIR)/icd10who.rdfxml.owl \
+		--update $(SPARQL_DIR)/declare_synonym_types.ru \
+		-o $@
+	rm -f $(TMP_DIR)/icd10who.rdfxml.owl
 	@echo "Built $@"
 
 # ── semsql index (uses released RDF/XML OWL) ────────────────────────────────────
