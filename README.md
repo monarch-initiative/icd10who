@@ -7,7 +7,7 @@ Preprocessed ICD-10 WHO source for Mondo ingest — LinkML YAML plus RDF/XML com
 1. Register at [WHO ICD API](https://icd.who.int/icdapi) for OAuth2 client credentials.
 2. Copy `env/.env.example` → `env/.env` and set `CLIENT_ID` and `CLIENT_SECRET`.
 3. Install dependencies: `uv sync`
-4. Align LinkML with the mondo-source-ingest pin (main-branch `linkml` / `linkml-runtime`, `linkml-owl` 0.5.0): `make dependencies`
+4. Install release pins (`linkml` / `linkml-runtime` 1.11.1, `linkml-owl` 0.5.0): `make dependencies`
 
 ## Run
 

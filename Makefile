@@ -7,8 +7,8 @@
 #
 # Requires: ROBOT (≥ 1.9), obolibrary/odkfull Docker image for CI, uv for Python.
 # Auth: set CLIENT_ID and CLIENT_SECRET in env/.env (see env/.env.example).
-# CI should run `make dependencies` after `uv sync` so linkml/linkml-runtime match
-# the mondo-source-ingest workaround (main-branch linkml-runtime; linkml-owl 0.5.0).
+# CI should run `make dependencies` after `uv sync` so linkml/linkml-runtime
+# and linkml-owl match the release pins (linkml 1.11.1; linkml-owl 0.5.0).
 
 ROBOT       ?= robot
 ROBOT_PLUGINS_DIRECTORY ?= /home/$(USER)/.robot/plugins
@@ -205,11 +205,12 @@ $(SOURCE_VERSION_TSV): $(MIRROR_OWL_RELEASE) $(SPARQL_DIR)/get-source-version.sp
 		| awk 'BEGIN{FS="\t"; OFS="\t"} {print "icd10who", $$1, $$2, $$3}' >> $@
 	@echo "Built $@"
 
-# Pin linkml-owl + main-branch linkml/linkml-runtime (comma-in-synonym workaround).
+# Pin linkml-owl plus released linkml/linkml-runtime. The comma-in-synonym
+# bug (linkml/linkml#3367) is fixed in 1.11.1; do not install from git main.
 dependencies:
 	$(UV) pip install linkml-owl==0.5.0 \
-		"linkml @ git+https://github.com/linkml/linkml.git@main#subdirectory=packages/linkml" \
-		"linkml-runtime @ git+https://github.com/linkml/linkml.git@main#subdirectory=packages/linkml_runtime" \
+		linkml==1.11.1 \
+		linkml-runtime==1.11.1 \
 		semsql sssom
 
 verify: $(YAML_OUT)

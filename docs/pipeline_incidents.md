@@ -48,7 +48,7 @@
 
 **Event:** Upstream `linkml_runtime._normalize_inlined` can raise `ValueError` when synonym text contains commas in `inlined_as_list` slots.
 
-**Resolution:** CI and local release builds run `make dependencies` after `uv sync` to install `linkml-owl==0.5.0` and `linkml` / `linkml-runtime` from the `linkml/linkml` monorepo `main` branch until the upstream bug is fixed. `transform.py` uses a custom YAML dumper that quotes strings containing `,`, `:`, `{`, or `}` to reduce parser ambiguity.
+**Resolution:** Fixed upstream in [linkml#3367](https://github.com/linkml/linkml/issues/3367) and released in `linkml` / `linkml-runtime` 1.11.1. `make dependencies` installs those releases plus `linkml-owl==0.5.0` after `uv sync`. `transform.py` still quotes strings containing `,`, `:`, `{`, or `}` to reduce parser ambiguity.
 
 ### 9. Schema alignment with mondo-source-ingest v0.4.0
 
