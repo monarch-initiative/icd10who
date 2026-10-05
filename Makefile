@@ -7,8 +7,7 @@
 #
 # Requires: ROBOT (≥ 1.9), obolibrary/odkfull Docker image for CI, uv for Python.
 # Auth: set CLIENT_ID and CLIENT_SECRET in env/.env (see env/.env.example).
-# CI should run `make dependencies` after `uv sync` so linkml/linkml-runtime match
-# the mondo-source-ingest workaround (main-branch linkml-runtime; linkml-owl 0.5.0).
+# Python dependencies are pinned in pyproject.toml. Install with `uv sync`.
 
 ROBOT       ?= robot
 ROBOT_PLUGINS_DIRECTORY ?= /home/$(USER)/.robot/plugins
@@ -73,7 +72,7 @@ RELEASE_ASSETS := \
 	$(SOURCE_DOC) \
 	$(METRICS_DOC)
 
-.PHONY: all build build-release acquire clean dependencies verify release-dirs
+.PHONY: all build build-release acquire clean verify release-dirs
 
 all: build
 
@@ -211,13 +210,6 @@ $(SOURCE_VERSION_TSV): $(MIRROR_OWL_RELEASE) $(SPARQL_DIR)/get-source-version.sp
 		| tail -n +2 \
 		| awk 'BEGIN{FS="\t"; OFS="\t"} {print "icd10who", $$1, $$2, $$3}' >> $@
 	@echo "Built $@"
-
-# Pin linkml-owl + main-branch linkml/linkml-runtime (comma-in-synonym workaround).
-dependencies:
-	$(UV) pip install linkml-owl==0.5.0 \
-		"linkml @ git+https://github.com/linkml/linkml.git@main#subdirectory=packages/linkml" \
-		"linkml-runtime @ git+https://github.com/linkml/linkml.git@main#subdirectory=packages/linkml_runtime" \
-		semsql sssom
 
 verify: $(YAML_OUT)
 	$(UV_RUN) python $(SCRIPTS_DIR)/verify.py --yaml $(YAML_OUT)

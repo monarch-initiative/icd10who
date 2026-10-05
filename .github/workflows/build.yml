@@ -38,4 +38,4 @@ jobs:
             -v "$PWD:/work" \
             -w /work \
             obolibrary/odkfull:v1.6 \
-            bash -lc "pip3 install --break-system-packages uv && uv sync && make dependencies && make build-release"
+            bash -lc "pip3 install --break-system-packages uv && uv sync && make build-release"
