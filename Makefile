@@ -143,12 +143,18 @@ $(YAML_OUT) $(FUNCTIONAL_OWL): $(OUTPUT_OWL) | release-dirs
 # RDF/XML for mondo-ingest / semsql (linkml-owl emits functional syntax).
 # Declare synonym-type properties after the LinkML dump. Without the
 # declaration, robot filter drops the hasSynonymType annotations.
+# linkml-owl writes an anonymous ontology header; restamp the component IRIs
+# so mondo-ingest records which icd10who release is baked in.
 $(OUTPUT_OWL_LINKML): $(FUNCTIONAL_OWL) $(SPARQL_DIR)/declare_synonym_types.ru
 	$(ROBOT) convert -i $(FUNCTIONAL_OWL) -o $(TMP_DIR)/icd10who.rdfxml.owl
 	$(ROBOT) query -i $(TMP_DIR)/icd10who.rdfxml.owl \
 		--update $(SPARQL_DIR)/declare_synonym_types.ru \
+		-o $(TMP_DIR)/icd10who.declared.owl
+	$(ROBOT) annotate -i $(TMP_DIR)/icd10who.declared.owl \
+		--ontology-iri $(URIBASE)/mondo/sources/icd10who.owl \
+		--version-iri $(URIBASE)/mondo/sources/$(TODAY)/icd10who.owl \
 		-o $@
-	rm -f $(TMP_DIR)/icd10who.rdfxml.owl
+	rm -f $(TMP_DIR)/icd10who.rdfxml.owl $(TMP_DIR)/icd10who.declared.owl
 	@echo "Built $@"
 
 # ── semsql index (uses released RDF/XML OWL) ────────────────────────────────────
